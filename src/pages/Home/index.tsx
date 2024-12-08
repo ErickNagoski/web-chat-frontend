@@ -1,5 +1,6 @@
 import { Avatar } from "@mui/material";
 import Header from "../../components/Header/Header";
+import { io } from "socket.io-client";
 import {
   ChatContainer,
   ContentContainer,
@@ -12,8 +13,31 @@ import {
   Bubble,
   MessageContainer,
 } from "../../components/Message/Messages.style";
+import { setSession } from "../../redux/session";
+import { useDispatch } from "react-redux";
 
 function Home(): JSX.Element {
+  const dispatch = useDispatch();
+  const socket = io("http://localhost:3000");
+
+  socket.on("connect", () => {
+    if (socket.id) {
+      dispatch(setSession(socket.id))
+    }
+
+    // Enviar mensagem
+    socket.emit("message", "Hello from client");
+
+    // Ouvir mensagens
+    socket.on("message", (data) => {
+      console.log(`Message from server: ${data}`);
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Disconnected from server");
+  });
+
   return (
     <MainContainer>
       <Header />
@@ -41,7 +65,7 @@ function Home(): JSX.Element {
               Message
             </Bubble>
           </MessageContainer>
-          <Input />
+          <Input onBlur={(event) => socket.emit("message", event.target.value)} />
         </ChatContainer>
       </ContentContainer>
       <Footer />
