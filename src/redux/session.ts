@@ -3,11 +3,12 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 export interface SessionState {
     session: string
-
+    room: string
 }
 
 const initialState: SessionState = {
-    session: ''
+    session: '',
+    room: 'general',
 
 }
 
@@ -17,10 +18,13 @@ export const SessionSlice = createSlice({
     reducers: {
         setSession(state, action: PayloadAction<string>) {
             state.session = action.payload
+        },
+        setRoom (state, action: PayloadAction<string>) {
+            state.room = action.payload
         }
     },
 })
 
-export const { setSession } = SessionSlice.actions
+export const { setSession,setRoom } = SessionSlice.actions
 
 export default SessionSlice.reducer

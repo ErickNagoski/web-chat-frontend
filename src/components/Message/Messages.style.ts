@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-export const MessageContainer = styled.div<{ user: string | null }>`
+export const MessageContainer = styled.div < { myMessage: boolean } > `
   align-items: center;
   display: flex;
-  justify-content: ${(props) => (props.user ? "flex-end" : "flex-start")};
+  justify-content: ${(props) => (props.myMessage ? "flex-end" : "flex-start")};
 `;
 
 interface BubbleProps {
