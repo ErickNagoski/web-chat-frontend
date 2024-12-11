@@ -1,10 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-  *,body {
+  body {
     margin:0;
-        padding: 0;
-        /* color: ${(props) => (props.darkmode ? "white" : "black")}; */
+    padding: 0;
+    overflow: hidden;
   }
 `;
 

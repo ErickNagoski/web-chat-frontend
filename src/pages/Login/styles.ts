@@ -57,3 +57,6 @@ export const ErrorMessage = styled.p`
   margin-bottom: 1rem;
   text-align: center;
 `;
+
+export const LoginImage = styled.img`
+`

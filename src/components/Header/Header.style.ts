@@ -2,9 +2,16 @@ import styled from "styled-components";
 
 export const HeaderContainer = styled.div`
   width: 100%;
+  background-color: #484b52;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  background-color: #4a4a4a;
-  color: #f4f5f6;
-  padding: 0px 30px 0px 30px;
+  flex-direction: row;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;

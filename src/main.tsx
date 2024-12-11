@@ -4,20 +4,20 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import Home from "./pages/Home/index.tsx";
 import GlobalStyle from "./global.ts";
 import Login from "./pages/Login/index.tsx";
-import { Provider } from 'react-redux'
+import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
-
-
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<Login />} />
-        <Route path="home" element={<Home />} />
-      </Routes>
-      <GlobalStyle />
-    </BrowserRouter>
+    <QueryClientProvider client={new QueryClient()}>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Login />} />
+          <Route path="home" element={<Home />} />
+        </Routes>
+        <GlobalStyle />
+      </BrowserRouter>
+    </QueryClientProvider>
   </Provider>
 );
