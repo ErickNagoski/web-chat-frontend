@@ -64,7 +64,7 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
 
   const handleJoinChat = (chatName: string) => {
     if (session.room != chatName) {
-      if (session.room != "general") {
+      if (session.room != "geral") {
         socket?.emit("leaveRoom", session.room);
       }
       dispatch(setRoom(chatName));

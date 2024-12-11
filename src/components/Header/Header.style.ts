@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const HeaderContainer = styled.div`
   width: 100%;
   background-color: #484b52;
+  color:#fff;
   padding: 10px;
   text-align: center;
   font-weight: bold;

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 export const Input = styled.input`
-  width: 100%;
+  width: 90%;
   padding: 10px;
-  border: none;
-  border-top: 1px solid #ccc;
+  border-radius:5px;
+  border: 1px solid #ccc;
   background-color: #484b52;
   color: white;
   outline: none;
@@ -14,16 +14,39 @@ export const Input = styled.input`
     font-size: 14px;
   }
 `;
-export const ChatContainer = styled.div`
-  /* width: 70%;
-  height: 100%;
-  background-color: #d2d2d2;
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 2px 0px;
+
+export const TextinputContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+
+export const SendButton = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 0 6px 10px 6px; */
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #4287f5;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    background-color: #2a6bdb;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const ChatContainer = styled.div`
   width: 800px;
   background-color: #2f3136;
   padding: 10px;

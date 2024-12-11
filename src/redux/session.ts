@@ -8,7 +8,7 @@ export interface SessionState {
 
 const initialState: SessionState = {
     session: '',
-    room: 'general',
+    room: 'geral',
 
 }
 
