@@ -33,6 +33,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
         if (socket) {
             socket.on("connect", () => {
                 if (socket.id) {
+                    socket.emit('activeUser', { id: socket.id, nickname: auth.nickname })
                     dispatch(setSession(socket.id));
                     socket.emit("join", { room: "geral", nickname: auth.nickname });
                 }
@@ -45,10 +46,6 @@ const Chat = ({ socket }: { socket: Socket }) => {
             // Ouvir mensagens
             socket.on("message", (data) => {
                 setMessages((old) => [...old, data]);
-            });
-
-            socket.on("users", (data) => {
-                console.log(data);
             });
         }
     }, [socket]);
