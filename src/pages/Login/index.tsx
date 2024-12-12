@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Container,
   Form,
@@ -8,14 +8,17 @@ import {
   LoginImage,
 } from "./styles";
 import api from "../../services/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthentication } from "../../redux/auth";
 import { useNavigate } from "react-router";
 import loginImage from "../../assets/login.svg";
 import { Button, Typography } from "@mui/material";
 import axios from "axios";
+import { RootState } from "../../redux/store";
 
 const Login = () => {
+  const { auth } = useSelector((state: RootState) => state);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -77,6 +80,12 @@ const Login = () => {
     dispatch(setAuthentication(profile));
     navigate("/home");
   };
+
+  useEffect(()=>{
+      if(auth.id){
+        navigate('home')
+      }
+  },[])
 
   return (
     <Container>

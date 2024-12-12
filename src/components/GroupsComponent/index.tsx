@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,11 +22,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Socket } from "socket.io-client";
 import { setRoom } from "../../redux/session";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AddIcon from "@mui/icons-material/Add";
 import { useRef, useState } from "react";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { logout } from "../../redux/auth";
+import { useNavigate } from "react-router";
 
 type RoomProps = {
   _id: string;
@@ -38,6 +42,10 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const dispatch = useDispatch();
   const [newRoomModal, setNewRoomModal] = useState(false);
   const roomNameRef = useRef();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient()
+
+
 
   const handleNewRoom = () => {
     setNewRoomModal(!newRoomModal);
@@ -89,14 +97,32 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
           Authorization: `Bearer ${auth.token}`,
         },
       }
-    );
+    ).then(() => {
+      setNewRoomModal(false);
+      queryClient.invalidateQueries({ queryKey: ['rooms'] })
+    })
   };
+
+  const handleLogout = () => {
+    socket.disconnect();
+    dispatch(logout())
+    navigate('/')
+
+  }
 
   return (
     <GroupsContainer>
       <UserContainer>
         <Avatar />
         <Typography>{auth.nickname}</Typography>
+        <Button
+          onClick={handleLogout}
+          endIcon={<PowerSettingsNewIcon fontSize="small" />}
+          color='error'
+          size="small"
+          sx={{ textTransform: "lowercase", alignItems: "center" }}>
+          Sair da Sessão
+        </Button>
       </UserContainer>
       <Button
         variant="contained"

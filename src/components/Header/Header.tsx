@@ -1,8 +1,9 @@
-import { Grid2 as Grid, Typography } from "@mui/material";
+import { Grid2 as Grid, IconButton, Typography } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { HeaderContainer } from "./Header.style";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+
 function Header(): JSX.Element {
   const { auth, session } = useSelector((state: RootState) => state)
 

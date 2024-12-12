@@ -1,6 +1,6 @@
 import { Avatar, Button, Grid2, Tooltip, Typography } from "@mui/material";
 import { Bubble, MessageContainer, } from "../Message/Messages.style";
-import { ChatContainer, ChatContent, ChatHeader, ChatTitle, Input, SendButton, TextinputContainer } from "./chat.styles";
+import { ChatContainer, ChatContent, ChatHeader, ChatTitle, Input, MessageHour, MessageText, SendButton, TextinputContainer } from "./chat.styles";
 import { Socket } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoom, setSession } from "../../redux/session";
@@ -9,10 +9,12 @@ import { RootState } from "../../redux/store";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SendIcon from '@mui/icons-material/Send';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import { format } from 'date-fns'
 
 type MessageProps = {
     content: string;
     user: string;
+    date: string
 };
 
 const Chat = ({ socket }: { socket: Socket }) => {
@@ -34,6 +36,10 @@ const Chat = ({ socket }: { socket: Socket }) => {
                     dispatch(setSession(socket.id));
                     socket.emit("join", { room: "geral", nickname: auth.nickname });
                 }
+            });
+
+            socket.on("disconnect", () => {
+                dispatch(setSession(''));
             });
 
             // Ouvir mensagens
@@ -68,11 +74,11 @@ const Chat = ({ socket }: { socket: Socket }) => {
         <ChatContainer>
             <ChatHeader>
                 <ChatTitle>{session.room}</ChatTitle>
-                <Tooltip title='Sair da sala'>
+                {session.room != 'geral' && (<Tooltip title='Sair da sala'>
                     <Button variant="outlined" color="error" onClick={HandleLeaveRoom}>
                         <LogoutIcon />
                     </Button>
-                </Tooltip>
+                </Tooltip>)}
 
             </ChatHeader>
             <ChatContent>
@@ -89,7 +95,9 @@ const Chat = ({ socket }: { socket: Socket }) => {
                                 user={myMessage}
                                 showAvatar={true}
                             >
-                                {msg.content}
+
+                                <MessageText>{msg.content}</MessageText>
+                                <MessageHour>{format(new Date(msg.date), 'HH:mm')}</MessageHour>
                             </Bubble>
                             {myMessage && (
                                 <Avatar>{msg.user.substring(0, 1).toUpperCase()}</Avatar>
@@ -101,15 +109,20 @@ const Chat = ({ socket }: { socket: Socket }) => {
 
             <TextinputContainer>
                 <Input
+                    autoFocus
                     placeholder="Digite sua mensagem..."
                     ref={inputRef}
                     onKeyDown={(event: any) => {
                         if (event.key === "Enter" && event.target.value.trim()) {
                             sendMessage(event.target.value);
                             event.target.value = "";
+
                         }
                     }} />
-                <SendButton onClick={() => sendMessage(inputRef.current.value.trim())}>
+                <SendButton onClick={() => {
+                    sendMessage(inputRef.current.value.trim());
+                    inputRef.current.value = '';
+                }}>
                     <SendIcon />
                 </SendButton>
             </TextinputContainer>

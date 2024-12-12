@@ -78,6 +78,8 @@ export const ChatContent = styled.div`
   flex-direction: column;
   background-color: #36393f;
   color: white;
+  overflow-y: auto;
+  padding: 5px 10px 15px 10px;
 
   @media (max-width: 768px) {
     flex: none;
@@ -92,3 +94,16 @@ export const ChatTitle = styled.p`
   color: #fff;
   text-transform: capitalize;
 `;
+
+export const MessageText = styled.p`
+   margin:0px;
+   padding:0px;
+   text-align: left;
+`
+
+export const MessageHour = styled.p`
+  margin:0px;
+  padding:0px;
+  font-size: 10px;
+  text-align: right;
+  `

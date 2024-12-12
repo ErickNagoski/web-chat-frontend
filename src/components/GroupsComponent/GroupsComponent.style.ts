@@ -21,6 +21,7 @@ export const UserContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 `;
 export const RoomButton = styled.button<{ onLine: boolean }>`
   display: flex;
@@ -36,6 +37,7 @@ export const RoomButton = styled.button<{ onLine: boolean }>`
   text-decoration: ${(props) => {
     return props.onLine ? "underline" : "none";
   }};
+  text-transform: capitalize;
   font-size: 20px;
   border-radius: 4px;
   cursor: pointer;

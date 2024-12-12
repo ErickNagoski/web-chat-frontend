@@ -38,6 +38,7 @@ export const Bubble = styled.div<BubbleProps>`
   display: inline-block;
   font-size: 14px;
   max-width: 50%;
+  min-width: 100px;
   margin: ${(props) => {
     const { isFirst, showAvatar, user } = props;
 
