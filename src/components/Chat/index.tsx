@@ -42,7 +42,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { session, auth } = useSelector((state: RootState) => state);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
@@ -173,17 +173,19 @@ const Chat = ({ socket }: { socket: Socket }) => {
           autoFocus
           placeholder="Digite sua mensagem..."
           ref={inputRef}
-          onKeyDown={(event: any) => {
-            if (event.key === "Enter" && event.target.value.trim()) {
-              sendMessage(event.target.value);
-              event.target.value = "";
+          onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter" && event.currentTarget.value.trim()) {
+              sendMessage(event.currentTarget.value);
+              event.currentTarget.value = "";
             }
           }}
         />
         <SendButton
           onClick={() => {
-            sendMessage(inputRef.current.value.trim());
-            inputRef.current.value = "";
+            if (inputRef.current?.value.trim()) {
+              sendMessage(inputRef.current.value.trim());
+              inputRef.current.value = "";
+            }
           }}
         >
           <SendIcon />
