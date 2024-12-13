@@ -9,10 +9,11 @@ import { RootState } from "../../redux/store";
 import UsersListComponent from "../../components/UsersList";
 import ErrorBoundary from "../../utils/ErrorBoundary";
 import { Button, Grid2, Typography } from "@mui/material";
+import { useNavigate } from "react-router";
 
 function Home(): JSX.Element {
   const { auth } = useSelector((state: RootState) => state);
-
+  const navigate = useNavigate()
   const [socket, setSocket] = useState<Socket>();
 
   const handleConnect = () => {
@@ -21,6 +22,9 @@ function Home(): JSX.Element {
   }
 
   useEffect(() => {
+    if(!auth.id){
+      navigate('/')
+    }
     if (!socket && auth.id) {
       handleConnect()
     }

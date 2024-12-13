@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ActiveUsersContainer = styled.div`
- width: 300px;
+  width: 300px;
   max-width: 30%;
   background-color: #2f3136;
   padding: 10px;
@@ -11,6 +11,7 @@ export const ActiveUsersContainer = styled.div`
 
   @media (max-width: 768px) {
     width: 100%;
+    max-width: 100%;
     height: auto;
   }
 `;
@@ -23,6 +24,11 @@ export const UsersList = styled.ul`
   margin: 0;
   list-style: none;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction:row; 
+    overflow-x :auto ;
+}
 `;
 
 export const UserItem = styled.li`
@@ -30,7 +36,7 @@ export const UserItem = styled.li`
   width: 100%;
   display:flex;
   align-items: center;
-
+  white-space: nowrap;
   font-size: large;
   color:#fff;
 

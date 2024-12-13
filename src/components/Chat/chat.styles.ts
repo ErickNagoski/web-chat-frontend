@@ -83,6 +83,8 @@ export const ChatContent = styled.div`
 
   @media (max-width: 768px) {
     flex: none;
+    min-height:300px;
+    max-height: 300px;
   }
 `;
 

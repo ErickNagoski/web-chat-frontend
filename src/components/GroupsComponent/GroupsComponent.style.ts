@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const GroupsContainer = styled.div`
- width: 300px;
+  width: 300px;
   max-width: 30%;
   background-color: #2f3136;
   padding: 10px;
@@ -11,6 +11,7 @@ export const GroupsContainer = styled.div`
 
   @media (max-width: 768px) {
     width: 100%;
+    max-width: 100%;
     height: auto;
   }
 `;
@@ -23,7 +24,7 @@ export const UserContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
 `;
-export const RoomButton = styled.button<{online: boolean }>`
+export const RoomButton = styled.button<{ online: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -31,6 +32,7 @@ export const RoomButton = styled.button<{online: boolean }>`
   border: none;
   width: 100%;
   background-color: transparent;
+  white-space: nowrap;
   color: ${(props) => {
     return props.online ? "#4caf50" : "#ffffff";
   }};
@@ -63,6 +65,9 @@ export const RoomsList = styled.ul`
   margin: 0;
   list-style: none;
   width: 100%;
+  @media (max-width: 768px) {
+    flex-direction:row;
+    overflow-x:auto  }
 `;
 
 export const RoomItem = styled.li`
