@@ -43,17 +43,17 @@ const Login = () => {
       })
       .catch((error) => {
         if (axios.isAxiosError(error)) {
-          switch (error.code) {
-            case "400":
+          switch (error.status) {
+            case 400:
               setError("Verifique os dados enviados");
               break;
-            case "401":
+            case 401:
               setError("Usuário ou senha incorreta");
               break;
-            case "500":
+            case 500:
               setError("Problemas com a requisição");
               break;
-            case "502":
+            case 502:
               setError("Serviço indisponível, tente novamente mais tarde");
           }
         } else {
@@ -81,11 +81,11 @@ const Login = () => {
     navigate("/home");
   };
 
-  useEffect(()=>{
-      if(auth.id){
-        navigate('home')
-      }
-  },[])
+  useEffect(() => {
+    if (auth.id) {
+      navigate("home");
+    }
+  }, []);
 
   return (
     <Container>
@@ -109,7 +109,7 @@ const Login = () => {
         <Button type="submit" variant="contained">
           Entrar
         </Button>
-        <Button type={"button"} variant="text">
+        <Button type={"button"} variant="text" onClick={() => navigate("cadastro")}>
           Criar meu cadastro
         </Button>
       </Form>

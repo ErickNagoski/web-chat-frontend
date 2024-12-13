@@ -6,6 +6,12 @@ export const Container = styled.div`
   align-items: center;
   height: 100vh;
   background-color: #f5f5f5;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Form = styled.form`
