@@ -13,7 +13,7 @@ interface BubbleProps {
   showAvatar?: boolean;
 }
 
-export const Bubble = styled.div<BubbleProps>`
+export const Bubble = styled.button<BubbleProps>`
   animation: 10ms 0.3s ease forwards;
   background-color: ${(props) => {
     return props.user ? "#80bfff" : "#f5f6f7";
@@ -65,4 +65,29 @@ export const Bubble = styled.div<BubbleProps>`
 
     return user ? "top right" : "top left";
   }};
+`;
+
+export const MessageText = styled.p`
+  margin: 0px;
+  padding: 0px;
+  text-align: left;
+`;
+
+export const MessageHour = styled.p`
+  margin: 0px;
+  padding: 0px;
+  font-size: 10px;
+  text-align: right;
+`;
+export const MessageActionButton = styled.button`
+  padding: 5px;
+  background-color: transparent;
+  margin: 0px 5px 0px 5px;
+  color: #fff;
+  box-shadow: none;
+  border: none;
+
+  &:hover {
+    background-color: #696d78;
+  }
 `;

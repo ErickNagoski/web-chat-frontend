@@ -13,20 +13,20 @@ import { useNavigate } from "react-router";
 
 function Home(): JSX.Element {
   const { auth } = useSelector((state: RootState) => state);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [socket, setSocket] = useState<Socket>();
 
   const handleConnect = () => {
     const connection = io("http://localhost:3000", {});
     setSocket(connection);
-  }
+  };
 
   useEffect(() => {
-    if(!auth.id){
-      navigate('/')
+    if (!auth.id) {
+      navigate("/");
     }
     if (!socket && auth.id) {
-      handleConnect()
+      handleConnect();
     }
   }, []);
 
@@ -42,17 +42,22 @@ function Home(): JSX.Element {
           </ContentContainer>
         </ErrorBoundary>
       </MainContainer>
-    )
+    );
   }
 
   return (
     <Grid2 container>
       <Header />
       <Grid2 padding={2}>
-        <Typography variant="h5">Você não está conectado ao nosso servidor!</Typography>
-        <Button variant="contained" onClick={handleConnect}>Conectar Agora</Button>
+        <Typography variant="h5">
+          Você não está conectado ao nosso servidor!
+        </Typography>
+        <Button variant="contained" onClick={handleConnect}>
+          Conectar Agora
+        </Button>
       </Grid2>
-    </Grid2>)
+    </Grid2>
+  );
 }
 
 export default Home;

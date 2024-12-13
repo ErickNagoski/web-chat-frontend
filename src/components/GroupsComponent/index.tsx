@@ -25,8 +25,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AddIcon from "@mui/icons-material/Add";
-import { useRef, useState } from "react";
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { useEffect, useRef, useState } from "react";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import { logout } from "../../redux/auth";
 import { useNavigate } from "react-router";
 
@@ -42,9 +42,7 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const [newRoomModal, setNewRoomModal] = useState(false);
   const roomNameRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient()
-
-
+  const queryClient = useQueryClient();
 
   const handleNewRoom = () => {
     setNewRoomModal(!newRoomModal);
@@ -72,7 +70,10 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const handleJoinChat = (chatName: string) => {
     if (session.room != chatName) {
       if (session.room != "geral") {
-        socket?.emit("leaveRoom", { room: session.room, nickname: auth.nickname });
+        socket?.emit("leaveRoom", {
+          room: session.room,
+          nickname: auth.nickname,
+        });
       }
       dispatch(setRoom(chatName));
       socket?.emit("joinRoom", { room: chatName, nickname: auth.nickname });
@@ -84,33 +85,42 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const createNewRoom = () => {
     if (roomNameRef.current) {
       const roomName = roomNameRef.current.value.trim();
-      api.post(
-        `rooms`,
-        {
-          nome: roomName,
-          cridor: auth.nickname,
-          created_at: new Date().toISOString(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
+      api
+        .post(
+          `rooms`,
+          {
+            nome: roomName,
+            cridor: auth.nickname,
+            created_at: new Date().toISOString(),
           },
-        }
-      ).then(() => {
-        setNewRoomModal(false);
-        queryClient.invalidateQueries({ queryKey: ['rooms'] })
-      })
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+          }
+        )
+        .then(() => {
+          setNewRoomModal(false);
+          queryClient.invalidateQueries({ queryKey: ["rooms"] });
+          socket.emit("newServer", roomName);
+        });
     }
-
   };
 
   const handleLogout = () => {
     socket.disconnect();
-    dispatch(logout())
-    navigate('/')
+    dispatch(logout());
+    navigate("/");
+  };
 
-  }
+  useEffect(()=>{
+    if(socket){
+      socket.on('newServer',()=>{
+        queryClient.invalidateQueries({ queryKey: ["rooms"] });
+      })
+    }
+  },[socket])
 
   return (
     <GroupsContainer>
@@ -120,9 +130,10 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
         <Button
           onClick={handleLogout}
           endIcon={<PowerSettingsNewIcon fontSize="small" />}
-          color='error'
+          color="error"
           size="small"
-          sx={{ textTransform: "lowercase", alignItems: "center" }}>
+          sx={{ textTransform: "lowercase", alignItems: "center" }}
+        >
           Sair da Sessão
         </Button>
       </UserContainer>
@@ -138,8 +149,10 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
       <Typography variant="h5" textAlign="center" color="#f4f5f6">
         Salas
       </Typography>
-      {isPending && (<p>Carregando salas...</p>)}
-      {error && (<Typography color="error">Não foi possível buscar as salas</Typography>)}
+      {isPending && <p>Carregando salas...</p>}
+      {error && (
+        <Typography color="error">Não foi possível buscar as salas</Typography>
+      )}
       <RoomsList>
         {rooms?.map((item) => (
           <RoomItem key={item._id}>

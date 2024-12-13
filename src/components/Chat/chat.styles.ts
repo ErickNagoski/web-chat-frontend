@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Input = styled.input`
   width: 90%;
   padding: 10px;
-  border-radius:5px;
+  border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #484b52;
   color: white;
@@ -16,9 +16,9 @@ export const Input = styled.input`
 `;
 
 export const TextinputContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export const SendButton = styled.div`
   display: flex;
@@ -83,7 +83,7 @@ export const ChatContent = styled.div`
 
   @media (max-width: 768px) {
     flex: none;
-    min-height:300px;
+    min-height: 300px;
     max-height: 300px;
   }
 `;
@@ -96,16 +96,3 @@ export const ChatTitle = styled.p`
   color: #fff;
   text-transform: capitalize;
 `;
-
-export const MessageText = styled.p`
-   margin:0px;
-   padding:0px;
-   text-align: left;
-`
-
-export const MessageHour = styled.p`
-  margin:0px;
-  padding:0px;
-  font-size: 10px;
-  text-align: right;
-  `

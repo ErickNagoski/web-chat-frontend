@@ -1,13 +1,10 @@
-import { Avatar, Button, Tooltip } from "@mui/material";
-import { Bubble, MessageContainer } from "../Message/Messages.style";
+import { Button, Tooltip, Typography } from "@mui/material";
 import {
   ChatContainer,
   ChatContent,
   ChatHeader,
   ChatTitle,
   Input,
-  MessageHour,
-  MessageText,
   SendButton,
   TextinputContainer,
 } from "./chat.styles";
@@ -18,12 +15,12 @@ import { useEffect, useRef, useState } from "react";
 import { RootState } from "../../redux/store";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SendIcon from "@mui/icons-material/Send";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
-import { format } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api";
+import MessageComponent from "../Message/MessageComponent";
 
-type MessageProps = {
+export type MessageProps = {
+  id: string;
   content: string;
   user: string;
   date: string;
@@ -51,6 +48,37 @@ const Chat = ({ socket }: { socket: Socket }) => {
     dispatch(setRoom("geral"));
   };
 
+  const handleDeleteMessage = async (id: string) => {
+    await api
+      .delete(`/messages/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+      })
+      .then(() => {
+        const filter = messages.filter((msg) => msg.id != id);
+        setMessages(filter);
+      });
+  };
+
+  const handleEditMessage = async (msgData: MessageProps) => {
+    await api
+      .patch(`/messages/${msgData.id}`, msgData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+      })
+      .then(() => {
+        setMessages((old: MessageProps[]) =>
+          old.map((message) =>
+            message.id === msgData.id ? { ...message, ...msgData } : message
+          )
+        );
+      });
+  };
+
   useEffect(() => {
     if (socket) {
       socket.on("connect", () => {
@@ -65,7 +93,6 @@ const Chat = ({ socket }: { socket: Socket }) => {
         dispatch(setSession(""));
       });
 
-      // Ouvir mensagens
       socket.on("message", (data) => {
         setMessages((old) => [...old, data]);
       });
@@ -103,18 +130,17 @@ const Chat = ({ socket }: { socket: Socket }) => {
     return response.data;
   }
 
-  const {
-    data: history,
-    isPending,
-  } = useQuery({
+  const { data: history, isPending } = useQuery({
     queryKey: ["history"],
     queryFn: getHistory,
+    refetchOnMount: true,
   });
 
   useEffect(() => {
     if (history && history?.length > 0) {
       const msgs: MessageProps[] = history?.map((item) => {
         return {
+          id: item._id,
           content: item.content,
           user: item.nickName,
           date: item.createdAt,
@@ -128,6 +154,9 @@ const Chat = ({ socket }: { socket: Socket }) => {
     <ChatContainer>
       <ChatHeader>
         <ChatTitle>{session.room}</ChatTitle>
+        {!session.session && (
+          <Typography color="error">Você está desconectado!</Typography>
+        )}
         {session.room != "geral" && (
           <Tooltip title="Sair da sala">
             <Button variant="outlined" color="error" onClick={HandleLeaveRoom}>
@@ -137,35 +166,16 @@ const Chat = ({ socket }: { socket: Socket }) => {
         )}
       </ChatHeader>
       <ChatContent>
-        {isPending && (<p>Carregando histórico...</p>)}
-        {messages.map((msg, i) => {
-          const myMessage = msg.user == auth.nickname;
-          return (
-            <MessageContainer key={i} myMessage={myMessage}>
-              {!myMessage && (
-                <Avatar>
-                  {msg.user ? (
-                    msg.user.substring(0, 1).toUpperCase()
-                  ) : (
-                    <SmartToyIcon />
-                  )}
-                </Avatar>
-              )}
-              <Bubble
-                isFirst={true}
-                isLast={false}
-                user={myMessage}
-                showAvatar={true}
-              >
-                <MessageText>{msg.content}</MessageText>
-                <MessageHour>{format(new Date(msg.date), "HH:mm")}</MessageHour>
-              </Bubble>
-              {myMessage && (
-                <Avatar>{msg.user.substring(0, 1).toUpperCase()}</Avatar>
-              )}
-            </MessageContainer>
-          );
-        })}
+        {isPending && <p>Carregando histórico...</p>}
+        {messages.map((msg) => (
+          <MessageComponent
+            key={msg.id}
+            message={msg}
+            nickname={auth.nickname}
+            handleDelete={handleDeleteMessage}
+            handleEdit={handleEditMessage}
+          />
+        ))}
       </ChatContent>
 
       <TextinputContainer>
@@ -173,6 +183,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
           autoFocus
           placeholder="Digite sua mensagem..."
           ref={inputRef}
+          disabled={!session.session}
           onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
             if (event.key === "Enter" && event.currentTarget.value.trim()) {
               sendMessage(event.currentTarget.value);
