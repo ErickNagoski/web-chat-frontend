@@ -35,7 +35,7 @@ type MessageHistoryProps = {
   userId: string;
   nickName: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
 };
 
 const Chat = ({ socket }: { socket: Socket }) => {
@@ -47,7 +47,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
   const HandleLeaveRoom = () => {
-    socket.emit("leaveRoom", session.room);
+    socket.emit("leaveRoom", { room: session.room, nickname: auth.nickname });
     dispatch(setRoom("geral"));
   };
 
@@ -105,7 +105,6 @@ const Chat = ({ socket }: { socket: Socket }) => {
 
   const {
     data: history,
-    error,
     isPending,
   } = useQuery({
     queryKey: ["history"],
@@ -114,7 +113,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
 
   useEffect(() => {
     if (history && history?.length > 0) {
-      const msgs = history?.map((item) => {
+      const msgs: MessageProps[] = history?.map((item) => {
         return {
           content: item.content,
           user: item.nickName,
@@ -138,6 +137,7 @@ const Chat = ({ socket }: { socket: Socket }) => {
         )}
       </ChatHeader>
       <ChatContent>
+        {isPending && (<p>Carregando histórico...</p>)}
         {messages.map((msg, i) => {
           const myMessage = msg.user == auth.nickname;
           return (

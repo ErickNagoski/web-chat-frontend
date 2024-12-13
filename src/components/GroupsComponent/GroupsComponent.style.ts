@@ -23,7 +23,7 @@ export const UserContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
 `;
-export const RoomButton = styled.button<{ onLine: boolean }>`
+export const RoomButton = styled.button<{online: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,10 +32,10 @@ export const RoomButton = styled.button<{ onLine: boolean }>`
   width: 100%;
   background-color: transparent;
   color: ${(props) => {
-    return props.onLine ? "#4caf50" : "#ffffff";
+    return props.online ? "#4caf50" : "#ffffff";
   }};
   text-decoration: ${(props) => {
-    return props.onLine ? "underline" : "none";
+    return props.online ? "underline" : "none";
   }};
   text-transform: capitalize;
   font-size: 20px;

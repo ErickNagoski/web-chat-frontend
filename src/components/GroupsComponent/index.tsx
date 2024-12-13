@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Socket } from "socket.io-client";
 import { setRoom } from "../../redux/session";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AddIcon from "@mui/icons-material/Add";
@@ -41,7 +40,7 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const { auth, session } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
   const [newRoomModal, setNewRoomModal] = useState(false);
-  const roomNameRef = useRef();
+  const roomNameRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient()
 
@@ -73,7 +72,7 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   const handleJoinChat = (chatName: string) => {
     if (session.room != chatName) {
       if (session.room != "geral") {
-        socket?.emit("leaveRoom", session.room);
+        socket?.emit("leaveRoom", { room: session.room, nickname: auth.nickname });
       }
       dispatch(setRoom(chatName));
       socket?.emit("joinRoom", { room: chatName, nickname: auth.nickname });
@@ -83,24 +82,27 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
   };
 
   const createNewRoom = () => {
-    const roomName = roomNameRef.current.value.trim();
-    api.post(
-      `rooms`,
-      {
-        nome: roomName,
-        cridor: auth.nickname,
-        created_at: new Date().toLocaleString(),
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`,
+    if (roomNameRef.current) {
+      const roomName = roomNameRef.current.value.trim();
+      api.post(
+        `rooms`,
+        {
+          nome: roomName,
+          cridor: auth.nickname,
+          created_at: new Date().toISOString(),
         },
-      }
-    ).then(() => {
-      setNewRoomModal(false);
-      queryClient.invalidateQueries({ queryKey: ['rooms'] })
-    })
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      ).then(() => {
+        setNewRoomModal(false);
+        queryClient.invalidateQueries({ queryKey: ['rooms'] })
+      })
+    }
+
   };
 
   const handleLogout = () => {
@@ -136,14 +138,16 @@ const GroupsComponet = ({ socket }: { socket: Socket }) => {
       <Typography variant="h5" textAlign="center" color="#f4f5f6">
         Salas
       </Typography>
+      {isPending && (<p>Carregando salas...</p>)}
+      {error && (<Typography color="error">Não foi possível buscar as salas</Typography>)}
       <RoomsList>
         {rooms?.map((item) => (
-          <RoomItem>
+          <RoomItem key={item._id}>
             <RoomButton
               onClick={() => {
                 handleJoinChat(item.nome);
               }}
-              onLine={session.room == item.nome}
+              online={session.room == item.nome}
             >
               <Avatar sx={{ marginRight: 2 }}>
                 <GroupsIcon />

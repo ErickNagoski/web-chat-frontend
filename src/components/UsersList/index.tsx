@@ -15,8 +15,6 @@ const UsersListComponent = ({ socket }: { socket: Socket }) => {
         if (socket) {
             socket.on('users', (users: ActiveUser[]) => {
                 if (users.length > 0) {
-
-                    console.log(users)
                     setActiveUsers(users)
                 }
             })
@@ -28,8 +26,8 @@ const UsersListComponent = ({ socket }: { socket: Socket }) => {
             <ActiveUsersContainer>
                 <Typography variant="h6" mb={2}>Usuários Ativos</Typography>
                 <UsersList>
-                    {activeUsers.map(user => (
-                        <UserItem>
+                    {activeUsers.map((user, i) => (
+                        <UserItem key={i}>
                             <Avatar sx={{ marginRight: 2 }}>{user.nickname.substring(0, 1).toUpperCase()}</Avatar>
                             {user.nickname}
                         </UserItem>))}
